@@ -47,7 +47,7 @@ install_requires = [
     "WebHelpers2",
     "requests",
     "khayyam"
-]
+] + testpkgs
 
 if py_version != (3, 2):
     # Babel not available on 3.2

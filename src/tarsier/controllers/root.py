@@ -1,20 +1,23 @@
-# -*- coding: utf-8 -*-
-"""Main Controller"""
-import datetime
-from khayyam import *
+
+from datetime import timedelta
+
 from tg import expose
 from tg import request, tmpl_context
+from tgext.admin.tgadminconfig import BootstrapTGAdminConfig as TGAdminConfig
+from tgext.admin.controller import AdminController
+from khayyam import JalaliDate
+
 from tarsier import model
 from tarsier.controllers.secure import SecureController
 from tarsier.model import DBSession
-from tgext.admin.tgadminconfig import BootstrapTGAdminConfig as TGAdminConfig
-from tgext.admin.controller import AdminController
-
 from tarsier.lib.base import BaseController
 from tarsier.controllers.error import ErrorController
 from tarsier.model.github import Commit
 
 __all__ = ['RootController']
+
+
+DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 
 
 class RootController(BaseController):
@@ -31,14 +34,11 @@ class RootController(BaseController):
     def index(self):
         """Handle the front-page."""
 
-        if 'date' in request.GET:
-            date = request.GET['date']
-            date = JalaliDate(date[:4], date[5:7], date[8:10]).todate()
-        else:
-            date = datetime.datetime.now()
+        date_string = request.GET.get('date')
 
-        # kwargs = {'since': str(date), 'until': str(date + datetime.timedelta(days=1))}
-        kwargs = {'since': str(date)}
+        date = JalaliDate.today() if date_string is None else JalaliDate.strptime(DEFAULT_DATE_FORMAT, date_string)
+
+        kwargs = {'since': date.strftime(DEFAULT_DATE_FORMAT), 'until': (date + timedelta(days=1)).strftime(DEFAULT_DATE_FORMAT)}
 
         # Define repositories list.
         repositories = [

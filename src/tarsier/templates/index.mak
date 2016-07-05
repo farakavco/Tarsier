@@ -8,7 +8,9 @@
 
         <div class="box">
             <form action="/" method="get">
-                <label class="lable">Since Date: </label><input type="text" name="date" class="date  form-control"/>
+                <label class="lable">Since Date: </label>
+                <input type="text"  class="date  form-control"/>
+                <input id="maskInput" type="text" name="date" class="date  form-control"/>
                 <button type="submit" class="btn btn-warning">Submit</button>
             </form>
         </div>

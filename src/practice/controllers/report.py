@@ -2,9 +2,12 @@ import smtplib
 import datetime
 
 from practice.model.github import Commit
+from practice.config.local_cnf import host, port, username, password
+from email.mime.text import MIMEText
 
 
 class ScheduledReport(object):
+    """Scheduled report """
 
     @classmethod
     def daily_commits(cls, authors=None, repositories=None):
@@ -22,7 +25,7 @@ class ScheduledReport(object):
             # Define authors list.
             authors = [
                 {'login': 'Sharez',
-                 'email': 'shahabrezaee@gmail.com',
+                 'email': 'shahabrezaee@gmail.com ',
                  'avatar_url': 'https://avatars.githubusercontent.com/u/328063?v=3',
                  'html_url': 'https://github.com/Sharez'},
                 {'login': 'pylover',
@@ -39,7 +42,6 @@ class ScheduledReport(object):
 
         for author in result:
             message = ''
-            print('username', author.username)
             for repo, val in author.commits.items():
                 message += '<p>repository: %s <br></p>' % repo
                 for v in val:
@@ -48,13 +50,13 @@ class ScheduledReport(object):
             cls.send_mail(recipient=author.email, message=message)
 
     @classmethod
-    def send_mail(cls, recipient, message, username='falcon.farakav@gmail.com', password='himopolooK90', subject='Report'):
+    def send_mail(cls, recipient, message, subject='Report'):
 
-        print('message', message, recipient)
         message = """From: %s\nTo: %s\nSubject: %s\n\n%s
            """ % (username, ", ".join([recipient]), subject, message)
         try:
-            server = smtplib.SMTP("smtp.gmail.com", 587)
+            message = MIMEText(message, 'html')
+            server = smtplib.SMTP(host, port)
             server.ehlo()
             server.starttls()
             server.login(username, password)

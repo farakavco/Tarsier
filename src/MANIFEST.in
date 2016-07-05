@@ -1,0 +1,4 @@
+recursive-include practice/public *
+include practice/public/favicon.ico
+recursive-include practice/i18n *
+recursive-include practice/templates *

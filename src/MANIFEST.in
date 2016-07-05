@@ -1,4 +1,4 @@
-recursive-include practice/public *
-include practice/public/favicon.ico
-recursive-include practice/i18n *
-recursive-include practice/templates *
+recursive-include tarsier/public *
+include tarsier/public/favicon.ico
+recursive-include tarsier/i18n *
+recursive-include tarsier/templates *

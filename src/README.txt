@@ -1,12 +1,12 @@
-This file is for you to describe the practice application. Typically
+This file is for you to describe the tarsier application. Typically
 you would include information such as the information below:
 
 Installation and Setup
 ======================
 
-Install ``practice`` using the setup.py script::
+Install ``tarsier`` using the setup.py script::
 
-    $ cd practice
+    $ cd tarsier
     $ python setup.py develop
 
 Create the project database for any model classes defined::

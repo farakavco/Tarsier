@@ -53,7 +53,7 @@ if py_version != (3, 2):
     install_requires.append("Babel")
 
 setup(
-    name='practice',
+    name='tarsier',
     version='0.1',
     description='',
     author='',
@@ -64,12 +64,12 @@ setup(
     include_package_data=True,
     test_suite='nose.collector',
     tests_require=testpkgs,
-    package_data={'practice': [
+    package_data={'tarsier': [
         'i18n/*/LC_MESSAGES/*.mo',
         'templates/*/*',
         'public/*/*'
     ]},
-    message_extractors={'practice': [
+    message_extractors={'tarsier': [
         ('**.py', 'python', None),
         ('templates/**.mak', 'mako', None),
         ('templates/**.html', 'genshi', None),
@@ -77,7 +77,7 @@ setup(
     ]},
     entry_points={
         'paste.app_factory': [
-            'main = practice.config.middleware:make_app'
+            'main = tarsier.config.middleware:make_app'
         ],
         'gearbox.plugins': [
             'turbogears-devtools = tg.devtools'

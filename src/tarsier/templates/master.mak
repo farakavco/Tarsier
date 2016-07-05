@@ -26,12 +26,6 @@
                     altField : "#maskInput",
                     altFormat: 'unix'
                 });
-##                 var date = $(".date").val();
-##                 console.log('date', date);
-##                 p_date = persianDate(date);
-##                 console.log('p_date', p_date);
-##                 var converted = p_date.toDate();
-##                 console.log('converted', converted);
             });
         </script>
 

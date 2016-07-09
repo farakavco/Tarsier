@@ -1,16 +1,18 @@
 <%inherit file="local:templates.master"/>
 
 <%def name="title()">
-  Commit
 </%def>
 <div class="row">
     <div class="col-md-12">
 
         <div class="box">
             <form action="/" method="get">
-                <label class="lable">Since Date: </label>
-                <input type="text"  class="date  form-control"/>
-                <input id="maskInput" type="text" name="date" class="date  form-control"/>
+                <label class="lable">Start Date: </label>
+                <input id="start_date" type="text"  class="start-date date  form-control"/>
+                <input id="start_date_mask" type="text" name="start_date" class="date hidden form-control"/>
+                <label class="lable">End Date: </label>
+                <input id="end_date" type="text"  class="end-date date  form-control"/>
+                <input id="end_date_mask" type="text" name="end_date" class="date hidden form-control"/>
                 <button type="submit" class="btn btn-warning">Submit</button>
             </form>
         </div>
@@ -27,21 +29,26 @@
                             <h3 class="col-md-12 center-block text-center username">${item.username}</h3>
                         </header>
                         <div class="col-md-12 commit-list">
-                            %for key, val in item.commits.items():
-                                <h3>${key}  <span class="smallest">( commits: ${len(val)} )</span></h3>
-                                <ul class="commit-container col-md-12">
-                                    %for v in val:
-                                        <a href="${v.url}" title="${v.sha}" class="col-md-5 commit-box">
-                                             <li>
-                                                <p class="smaller text-sha"><b>Sha: </b> ${v.sha}</p>
-                                                <p class="smallest">${v.time}</p>
-                                                <p class="message smaller"><b>Message: </b>${v.message}</p>
-                                            </li>
-                                        </a>
-
-                                    %endfor
-                                  </ul>
-                            %endfor
+                            %if item.has_commit is False:
+                                <p class="no-commit">This user has no commit in this range date.</p>
+                            %else:
+                                %for repo, commit in item.commits.items():
+                                    %if commit:
+                                        <h3> ${repo} <span class="smallest">( commits: ${len(commit)})</span></h3>
+                                        <ul class="commit-container col-md-12">
+                                            %for v in commit:
+                                                <a href="${v.url}" title="${v.sha}" class="col-md-5 commit-box">
+                                                     <li>
+                                                        <p class="smaller text-sha"><b>Sha: </b> ${v.sha}</p>
+                                                        <p class="smallest">${v.time}</p>
+                                                        <p class="message smaller"><b>Message: </b>${v.message}</p>
+                                                    </li>
+                                                </a>
+                                            %endfor
+                                        </ul>
+                                    %endif
+                                %endfor
+                            %endif
                         </div>
                     </article>
                 %endfor

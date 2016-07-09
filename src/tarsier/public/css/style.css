@@ -103,6 +103,11 @@ header h3.username{
     opacity: 0;
 }
 
+.no-commit{
+    margin: 10px 0px;
+    font-size: 17px;
+}
+
 .commit-container{
     list-style: none;
 }

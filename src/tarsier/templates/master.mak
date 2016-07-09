@@ -19,15 +19,7 @@
         <script src="${tg.url('/javascript/bootstrap.min.js')}"></script>
         <script src="${tg.url('/javascript/pwt-date.js')}"></script>
         <script src="${tg.url('/javascript/persian-datepicker-0.4.5.js')}"></script>
-
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $(".date").pDatepicker({
-                    altField : "#maskInput",
-                    altFormat: 'unix'
-                });
-            });
-        </script>
+        <script src="${tg.url('/javascript/main.js')}"></script>
 
     </body>
 

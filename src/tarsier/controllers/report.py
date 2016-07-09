@@ -8,7 +8,7 @@ from tarsier.model.github import Commit
 from tarsier.config.local_cnf import host, port, username, password
 
 
-DEFAULT_DATE_FORMAT = '%Y-%m-%d'
+DEFAULT_DATE_FORMAT = '%Y-%m-%dT00:00:00'
 
 
 class ScheduledReport(object):
@@ -16,7 +16,6 @@ class ScheduledReport(object):
 
     @classmethod
     def daily_commits(cls, authors=None, repositories=None):
-
         # Get today date.
         date = datetime.today()
 
@@ -35,44 +34,60 @@ class ScheduledReport(object):
         if not authors:
             # Define authors list.
             authors = [
-                {'login': 'aida-mirabadi',
-                 'email': 'aida.mirabadi@gmail.com ',
-                 'avatar_url': 'https://avatars.githubusercontent.com/u/7857775?v=3',
-                 'html_url': 'https://api.github.com/users/aida-mirabadi'},
-                {'login': 'Sharez',
-                 'email': 'shahabrezaee@gmail.com ',
-                 'avatar_url': 'https://avatars.githubusercontent.com/u/328063?v=3',
-                 'html_url': 'https://github.com/Sharez'},
-                {'login': 'pylover',
-                 'email': 'vahid.mardani@gmail.com',
-                 'avatar_url': 'https://avatars.githubusercontent.com/u/1302253?v=3',
-                 'html_url': 'https://github.com/pylover'},
+                dict(
+                    login='pylover',
+                    email='vahid.mardani@gmail.com',
+                    avatar_url='https://avatars.githubusercontent.com/u/1302253?v=3',
+                    html_url='https://github.com/pylover'
+                ),
+                dict(
+                    login='Sharez',
+                    email='shahabrezaee@gmail.com',
+                    avatar_url='https://avatars.githubusercontent.com/u/328063?v=3',
+                    html_url='https://github.com/Sharez'
+                ),
+                dict(
+                    login='aida-mirabadi',
+                    email='aida.mirabadi@gmail.com',
+                    avatar_url='https://avatars.githubusercontent.com/u/7857775?v=3',
+                    html_url='https://api.github.com/users/aida-mirabadi'
+                ),
             ]
 
         commits = Commit.get_all(repositories, authors, **kwargs)
-        print('commits', commits)
         cls.create_email_content(commits)
 
     @classmethod
-    def create_email_content(cls, result):
+    def create_email_content(cls, authors):
+        for author in authors:
+            message = '<p style="font-size:14px"><b>Today:<b></p>'
+            if author.commits:
+                for repo, commit in author.commits.items():
+                    if commit:
+                        message += '<span style="font-size:14px">[%s]: </span>' % repo
+                        message += '<ul>'
+                        for v in commit:
+                            message += '<li style="font-size:12px">%s</li>' % v.message
+                        message += '</ul>'
+                if author.has_commit is False:
+                    message += '<p>You have no commit today.</p>'
+            message += """
+            <p style="font-size:14px">
+                <b>Tomorrow:<b>
+            </p>
+            <br>
+            <p style="font-size:14px">
+                <b>Blocking:<b>
+            </p>
+            <br>"""
 
-        for author in result:
-            message = ''
-            for repo, val in author.commits.items():
-                message += '<p style="font-size:14px"><b> %s <b><br></p>' % repo
-                message += '<ul>'
-                for v in val:
-                    message += '<li style="font-size:12px">%s</li>' % v.message
-                message += '</ul>'
             cls.send_mail(recipient=author.email, message=message)
 
     @classmethod
     def send_mail(cls, recipient, message):
-
         try:
-            print('yess')
             msg = MIMEMultipart('alternative')
-            msg['Subject'] = 'Daily report - %s' % datetime.today().strftime(DEFAULT_DATE_FORMAT)
+            msg['Subject'] = 'Daily report - %s' % datetime.today().strftime('%Y-%m-%d')
 
             message = MIMEText(message, 'html')
             msg.attach(message)

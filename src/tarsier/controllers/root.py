@@ -16,7 +16,8 @@ from tarsier.model.github import Commit
 __all__ = ['RootController']
 
 
-DEFAULT_DATE_FORMAT = '%Y-%m-%d'
+START_DATE_FORMAT = '%Y-%m-%dT00:00:00'
+END_DATE_FORMAT = '%Y-%m-%dT23:59:59'
 
 
 class RootController(BaseController):
@@ -32,19 +33,21 @@ class RootController(BaseController):
     @expose('tarsier.templates.index')
     def index(self):
         """Handle the front-page."""
-        date_string = request.GET.get('date', None)
+        start_date_string = request.GET.get('start_date', None)
+        end_date_string = request.GET.get('end_date', None)
 
-        date = datetime.fromtimestamp(int(date_string[:10])) if date_string else datetime.today()
+        start_date = datetime.fromtimestamp(int(start_date_string[:10])) if start_date_string else datetime.today()
+        end_date = datetime.fromtimestamp(int(end_date_string[:10])) if end_date_string else (start_date + timedelta(days=1))
 
         # Define query params of Github api.
         kwargs = {
-            'since': date.strftime(DEFAULT_DATE_FORMAT),
-            'until': (date + timedelta(days=1)).strftime(DEFAULT_DATE_FORMAT)
+            'since': start_date.strftime(START_DATE_FORMAT),
+            'until': end_date.strftime(END_DATE_FORMAT)
         }
 
         # Define repositories list.
         repositories = [
-            'farakavco/kakapo', 'farakavco/blueprint', 'farakavco/lutino', 'farakavco/tutorials'
+            'farakavco/Tarsier', 'farakavco/kakapo', 'farakavco/blueprint', 'farakavco/lutino', 'farakavco/tutorials'
         ]
 
         result = Commit.get_all(repositories, **kwargs)

@@ -36,7 +36,11 @@ class RootController(BaseController):
 
         date = datetime.fromtimestamp(int(date_string[:10])) if date_string else datetime.today()
 
-        kwargs = {'since': date.strftime(DEFAULT_DATE_FORMAT), 'until': (date + timedelta(days=1)).strftime(DEFAULT_DATE_FORMAT)}
+        # Define query params of Github api.
+        kwargs = {
+            'since': date.strftime(DEFAULT_DATE_FORMAT),
+            'until': (date + timedelta(days=1)).strftime(DEFAULT_DATE_FORMAT)
+        }
 
         # Define repositories list.
         repositories = [

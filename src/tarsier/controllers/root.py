@@ -36,8 +36,8 @@ class RootController(BaseController):
         start_date_string = request.GET.get('start_date', None)
         end_date_string = request.GET.get('end_date', None)
 
-        start_date = datetime.fromtimestamp(int(start_date_string[:10])) if start_date_string else datetime.today()
-        end_date = datetime.fromtimestamp(int(end_date_string[:10])) if end_date_string else (start_date + timedelta(days=1))
+        start_date = datetime.fromtimestamp(int(start_date_string)/1000) if start_date_string else datetime.today()
+        end_date = datetime.fromtimestamp(int(end_date_string)/1000) if end_date_string else (start_date + timedelta(days=1))
 
         # Define query params of Github api.
         kwargs = {

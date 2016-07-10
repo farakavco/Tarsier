@@ -8,13 +8,8 @@ from tarsier.config.app_cfg import base_config
 class Author(object):
     """Class of contributors of repositories."""
 
-    def __init__(self, username, email, avatar, github_url, commits,  has_commit=False):
-        self.username = username
-        self.email = email
-        self.avatar = avatar
-        self.github_url = github_url
-        self.commits = commits
-        self.has_commit = has_commit
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
 
     @classmethod
     def get_by_repository(self, repo):
@@ -43,42 +38,41 @@ class Commit(object):
     """Class of uthors commits."""
 
     @classmethod
-    def get_all(cls, repositories, users=None, **kwargs):
-        result = []
+    def get_all(cls, repositories, authors=None, **kwargs):
+        result = {}
 
         for repo in repositories:
             repo = repo.split('/')[1]
 
             # Get authors from by repository if no users send in input.
-            if users is None:
-                authors = Author.get_by_repository(repo)
+            selected_authors = authors if authors else Author.get_by_repository(repo)
 
             # Get commits based on repository.
             commits = cls.get_by_repository(repo, **kwargs)
 
-            for author in authors:
-                filtered_commits = filter(lambda x: x.username == author['login'], commits)
-                filtered_commits = [c for c in filtered_commits]
-
-                exist_author = next((aut for aut in result if aut.username == author['login']), None)
+            for author in selected_authors:
+                filtered_commits = [a for a in commits if a.username == author['login']]
+                exist_author = result.get(author['login'])
 
                 # Check if author exists through previous repositories.
                 if not exist_author:
-                    author_obj = Author(username=author['login'],
-                                        avatar=author['avatar_url'],
-                                        email=author['email'] if 'email' in author else '',
-                                        github_url=author['html_url'],
-                                        commits={})
+                    author_obj = Author(
+                        username=author['login'],
+                        avatar=author['avatar_url'],
+                        email=author['email'] if 'email' in author else '',
+                        github_url=author['html_url'],
+                        commits={}
+                    )
 
                     author_obj.commits[repo] = filtered_commits
                     author_obj.has_commit = cls._set_commit_flag(author_obj, filtered_commits)
-                    result.append(author_obj)
+                    result[author['login']] = author_obj
 
                 else:
                     exist_author.commits[repo] = filtered_commits
                     exist_author.has_commit = cls._set_commit_flag(exist_author, filtered_commits)
 
-        return result
+        return result.values()
 
     @classmethod
     def get_by_repository(cls, repo, **kwargs):
@@ -93,11 +87,11 @@ class Commit(object):
         for commit in commits:
             try:
                 commit_obj = Commit()
-                commit_obj.__dict__['username'] = commit['author']['login']
-                commit_obj.__dict__['sha'] = str(commit['sha'])[:8]
-                commit_obj.__dict__['time'] = str(commit['commit']['author']['date'])[11:19]
-                commit_obj.__dict__['message'] = commit['commit']['message']
-                commit_obj.__dict__['url'] = commit['html_url']
+                commit_obj.username = commit['author']['login']
+                commit_obj.sha = str(commit['sha'])[:8]
+                commit_obj.time = str(commit['commit']['author']['date'])[11:19]
+                commit_obj.message = commit['commit']['message']
+                commit_obj.url = commit['html_url']
                 result.append(commit_obj)
             except:
                 continue

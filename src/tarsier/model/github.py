@@ -61,6 +61,7 @@ class Commit(object):
                         avatar=author['avatar_url'],
                         email=author['email'] if 'email' in author else '',
                         github_url=author['html_url'],
+                        has_commit=False,
                         commits={}
                     )
 

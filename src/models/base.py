@@ -1,0 +1,6 @@
+
+
+
+class BaseModel(object):
+    pass
+

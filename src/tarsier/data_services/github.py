@@ -30,6 +30,7 @@ class GithubDataService(BaseDataService):
                                 message=r['commit']['message'],
                                 url=r['html_url'],
                                 repo=repo
-                        ) for r in await resp.json() if r['author']['login'] == author.username]
+                        )
+                        for r in await resp.json() if r['author']['login'] == author.username]
 
-            return await asyncio.gather(*[fetch(repo, kwargs, a) for repo in self.repositories for a in self.authors])
+            return await asyncio.gather(*[fetch(repo, kwargs, a) for a in self.authors for repo in self.repositories])

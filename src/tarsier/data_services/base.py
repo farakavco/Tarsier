@@ -1,6 +1,8 @@
 
 
 class BaseDataService(object):
+    """Base model of data services"""
 
-    def get_all(self):
+    @classmethod
+    def get_commits(cls, **kwargs):
         raise NotImplementedError

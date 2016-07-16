@@ -1,6 +1,0 @@
-
-
-
-class BaseModel(object):
-    pass
-

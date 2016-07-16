@@ -1,7 +1,6 @@
 
 import asyncio
 import aiohttp
-from urllib.parse import urlencode
 
 from tarsier.data_services.base import BaseDataService
 from tarsier.config.app_cfg import GITHUB_BASE_URL
@@ -20,17 +19,17 @@ class GithubDataService(BaseDataService):
         with aiohttp.ClientSession() as session:
 
             async def fetch(repo, params, author):
-                url = '%s/repos/%s/commits?%s' % (GITHUB_BASE_URL, repo, urlencode(params))
-                print('url', url)
-                async with session.get(url, headers={'Authorization': 'token %s' % author.token}) as resp:
-                    for result in await resp.json():
-                        return Commit(
-                            username=result['author']['login'],
-                            sha=str(result['sha'])[:8],
-                            time=str(result['commit']['author']['date'])[11:19],
-                            message=result['commit']['message'],
-                            url=result['html_url'],
-                            repo=repo
-                        )
+                url = '%s/repos/%s/commits' % (GITHUB_BASE_URL, repo)
+
+                async with session.get(url, params=params, headers={'Authorization': 'token %s' % author.token}) as resp:
+                    return [
+                        Commit(
+                                username=r['author']['login'],
+                                sha=str(r['sha'])[:8],
+                                time=str(r['commit']['author']['date'])[11:19],
+                                message=r['commit']['message'],
+                                url=r['html_url'],
+                                repo=repo
+                        ) for r in await resp.json() if r['author']['login'] == author.username]
 
             return await asyncio.gather(*[fetch(repo, kwargs, a) for repo in self.repositories for a in self.authors])

@@ -1,6 +1,4 @@
+
 Tarsier
-=======
-
-
-
-Github report group by user on selected date.
+======================
+An email worker for sending Github daily report.

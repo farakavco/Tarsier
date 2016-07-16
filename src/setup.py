@@ -1,88 +1,46 @@
-# -*- coding: utf-8 -*-
+"""
+# install it by: pip install --process-dependency-links --trusted-host guthub.com -e .
+"""
 
-#  Quickstarted Options:
-#
-#  sqlalchemy: True
-#  auth:       sqlalchemy
-#  mako:       True
-#
-#
+from os.path import join, dirname
+import re
+from setuptools import setup, find_packages
+__author__ = 'aida'
 
-# This is just a work-around for a Python2.7 issue causing
-# interpreter crash at exit when trying to log an info message.
-try:
-    import logging
-    import multiprocessing
-except:
-    pass
+# reading package version (same way the sqlalchemy does)
+with open(join(dirname(__file__), 'tarsier', '__init__.py')) as v_file:
+    package_version = re.compile(r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
-import sys
-py_version = sys.version_info[:2]
-
-try:
-    from setuptools import setup, find_packages
-except ImportError:
-    from ez_setup import use_setuptools
-    use_setuptools()
-    from setuptools import setup, find_packages
-
-testpkgs = [
-    'WebTest >= 1.2.3',
-    'nose',
-    'coverage',
-    'gearbox'
+dependencies = [
+    'Mako',
+    'aiohttp',
+    'aiohttp-mako',
+    'wheezy.web',
 ]
 
-install_requires = [
-    "TurboGears2 >= 2.3.8",
-    "Beaker >= 1.8.0",
-    "Genshi",
-    "Mako",
-    "zope.sqlalchemy >= 0.4",
-    "sqlalchemy",
-    "alembic",
-    "repoze.who",
-    "tw2.forms",
-    "tgext.admin >= 0.6.1",
-    "WebHelpers2",
-    "requests",
-    "aiohttp"
-] + testpkgs
 
-if py_version != (3, 2):
-    # Babel not available on 3.2
-    install_requires.append("Babel")
+test_dependencies = [
+    'webtest',
+    'nose'
+]
+
 
 setup(
-    name='tarsier',
-    version='0.1',
-    description='',
-    author='',
-    author_email='',
-    url='',
-    packages=find_packages(exclude=['ez_setup']),
-    install_requires=install_requires,
-    include_package_data=True,
-    test_suite='nose.collector',
-    tests_require=testpkgs,
-    package_data={'tarsier': [
-        'i18n/*/LC_MESSAGES/*.mo',
-        'templates/*/*',
-        'public/*/*'
-    ]},
+    name="tarsier",
+    version=package_version,
+    author="Aida Mirabadi",
+    author_email="aida.mirabadi@gmail.com",
+    long_description=open(join('..', 'README.md'), encoding='UTF-8').read(),
+    install_requires=dependencies + test_dependencies,
+    packages=find_packages(),
+    dependency_links='',
     message_extractors={'tarsier': [
         ('**.py', 'python', None),
-        ('templates/**.mak', 'mako', None),
-        ('templates/**.html', 'genshi', None),
-        ('public/**', 'ignore', None)
+        ('**.mak', 'python', None),
     ]},
     entry_points={
-        'paste.app_factory': [
-            'main = tarsier.config.middleware:make_app'
-        ],
-        'gearbox.plugins': [
-            'turbogears-devtools = tg.devtools'
+        'console_scripts': [
+            'tarsier = tarsier.cli:main'
         ]
     },
-    zip_safe=False
 )

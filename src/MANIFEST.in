@@ -1,4 +1,0 @@
-recursive-include tarsier/public *
-include tarsier/public/favicon.ico
-recursive-include tarsier/i18n *
-recursive-include tarsier/templates *

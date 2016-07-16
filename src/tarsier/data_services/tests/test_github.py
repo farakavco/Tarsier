@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from tarsier.model.author import Author
 from tarsier.data_services.github import GithubDataService
-from tarsier.messaging.postman import Postman
+from tarsier.messaging.daily_report import DailyReport
 from tarsier.config import app_cfg
 
 
@@ -49,8 +49,8 @@ async def main():
     commits = await GithubDataService(repositories, authors).get_commits(**kwargs)
 
     for index, commit in enumerate(commits):
-        postman = Postman()
-        postman.smtp_send(
+        daily_report = DailyReport()
+        daily_report.smtp_send(
             authors[index].email,
             app_cfg.EMAIL_SUBJECT,
             {

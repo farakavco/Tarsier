@@ -6,7 +6,7 @@ from tarsier.messaging.messenger import Messenger
 from tarsier.config import app_cfg
 
 
-class Postman(Messenger):
+class DailyReport(Messenger):
     """
     The class for sending email via smtp server.
     """

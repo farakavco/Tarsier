@@ -16,7 +16,7 @@
         a {color: #999;text-decoration: none;text-decoration:none!important;padding:0;}
     </style>
 </head>
-<body style="background-color:#eee;margin:15px 0;">
+<body style="margin:15px 0;">
     ${next.body()}
 </body>
 </html>

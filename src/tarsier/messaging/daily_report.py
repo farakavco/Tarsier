@@ -36,4 +36,4 @@ class DailyReport(Messenger):
             print('Success')
 
         except Exception as ex:
-            print('Error %s:', ex)
+            print('Error %s:' % ex)

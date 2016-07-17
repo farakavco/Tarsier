@@ -16,6 +16,7 @@ dependencies = [
     'aiohttp',
     'aiohttp-mako',
     'wheezy.web',
+    'khayyam'
 ]
 
 

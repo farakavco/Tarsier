@@ -1,18 +1,23 @@
-from datetime import datetime
+
+from khayyam import JalaliDate
 
 from tarsier.model.author import Author
 
 
-# Date configs.
+# Date formats configs.
 START_DATE_FORMAT = '%Y-%m-%dT00:00:00Z'
 END_DATE_FORMAT = '%Y-%m-%dT23:59:59Z'
+PERSIAN_DATE_FORMAT = '%E %d %G %Y'
 
 # SMTP configs.
 HOST = 'smtp.gmail.com'
 PORT = 587
-USERNAME = 'falcon.farakav@gmail.com'
-PASSWORD = 'himopolooK90'
-EMAIL_SUBJECT = "Daily report - %s " % datetime.today().strftime('%Y-%m-%d')
+USERNAME = ''
+PASSWORD = ''
+
+# Email global data.
+EMAIL_SUBJECT = "Daily Report"
+EMAIL_DATE = JalaliDate.today().strftime(PERSIAN_DATE_FORMAT)
 
 # Github base url.
 GITHUB_BASE_URL = 'http://api.github.com'

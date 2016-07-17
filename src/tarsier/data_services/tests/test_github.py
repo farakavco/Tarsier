@@ -14,13 +14,12 @@ async def main():
         'since': datetime.today().strftime(settings.START_DATE_FORMAT),
         'until': (datetime.today() + timedelta(days=1)).strftime(settings.END_DATE_FORMAT)
     }
-    print('kwar', kwargs)
+    # Get all Github commits.
     commits = await GithubDataService(settings.GITHUB_REPOSITORIES, settings.GITHUB_AUTHORS).get_commits(**kwargs)
 
     author_index = 0
     repo_count = 0
     reports = []
-
     for repo_commit in commits:
         repo_count += 1
         reports = list(reports) + list(repo_commit)
@@ -29,12 +28,13 @@ async def main():
             daily_report = DailyReport()
             daily_report.smtp_send(
                 settings.GITHUB_AUTHORS[author_index].email,
-                settings.EMAIL_SUBJECT,
+                '%s - %s' % (settings.EMAIL_SUBJECT, settings.EMAIL_DATE),
                 {
                     'author': settings.GITHUB_AUTHORS[author_index],
                     'commits': reports,
                     'commits_flag': True if reports else False,
-                    'title': settings.EMAIL_SUBJECT,
+                    'subject': settings.EMAIL_SUBJECT,
+                    'date': settings.EMAIL_DATE,
                 },
                 template_filename='daily_report.mak'
             )

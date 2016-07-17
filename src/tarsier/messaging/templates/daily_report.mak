@@ -5,7 +5,7 @@
         <img class="avatar" width="50" height="50" style="display:block; border-radius: 50%; outline:none; text-decoration:none;" src="${author.avatar_url}">
     </a>
     <h1 style="font-size: 16px;margin: 0px 0 10px 60px;line-height: 25px;color: #505050;">${author.username}</h1>
-    <h3 style="font-size: 12px;margin: 0;margin-left: 60px;color: #5789bf">${title}</h3>
+    <h3 style="font-size: 12px;margin: 0;margin-left: 60px;color: #5789bf">${date}</h3>
 </div>
 <div style="margin-left: 25px;border-left: 2px solid #9632b7;padding-left: 0px;">
     <div style="height: 40px;"></div>

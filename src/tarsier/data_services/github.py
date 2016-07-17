@@ -21,6 +21,8 @@ class GithubDataService(BaseDataService):
             async def fetch(repo, params, author):
                 url = '%s/repos/%s/commits' % (GITHUB_BASE_URL, repo)
 
+                params['author'] = author.username
+
                 async with session.get(url, params=params, headers={'Authorization': 'token %s' % author.token}) as resp:
                     return [
                         Commit(
@@ -31,6 +33,6 @@ class GithubDataService(BaseDataService):
                                 url=r['html_url'],
                                 repo=repo
                         )
-                        for r in await resp.json() if r['author']['login'] == author.username]
+                        for r in await resp.json()]
 
             return await asyncio.gather(*[fetch(repo, kwargs, a) for a in self.authors for repo in self.repositories])

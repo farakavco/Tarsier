@@ -4,7 +4,7 @@ import aiohttp
 import traceback
 
 from tarsier.data_services.base import BaseDataService
-from tarsier.config.settings import GITHUB_BASE_URL
+from tarsier.configuration import settings
 from tarsier.model.commit import Commit
 
 
@@ -21,21 +21,25 @@ class GithubDataService(BaseDataService):
 
             async def fetch(repo, params, author):
                 try:
-                    branch_url = '%s/repos/%s/branches' % (GITHUB_BASE_URL, repo)
-                    async with session.get(branch_url, headers={'Authorization': 'token %s' % author.token}) as branch_resp:
+                    branch_url = '%s/repos/%s/branches' % (settings.github.base_url, repo)
+
+                    async with session.get(
+                            branch_url,
+                            headers={'Authorization': 'token %s' % author.token}
+                    ) as branch_resp:
                         result = set()
-                        branches = await branch_resp.json()
-                        print('branches', branches)
-
                         for branch in await branch_resp.json():
-                            commit_url = '%s/repos/%s/commits' % (GITHUB_BASE_URL, repo)
+                            commit_url = '%s/repos/%s/commits' % (settings.github.base_url, repo)
 
-                            # Define author and branch_name params for commit API.
+                            # Extra params for commit API as author and branch_name.
                             params['author'] = author.username
                             params['sha'] = branch['name']
 
-                            async with session.get(commit_url, params=params, headers={'Authorization': 'token %s' % author.token}) as commit_resp:
-
+                            async with session.get(
+                                    commit_url,
+                                    params=params,
+                                    headers={'Authorization': 'token %s' % author.token}
+                            ) as commit_resp:
                                 for commit in await commit_resp.json():
                                     result.add(
                                         Commit(
@@ -52,4 +56,6 @@ class GithubDataService(BaseDataService):
                 except Exception as ex:
                     traceback.print_exc(ex)
 
-            return await asyncio.gather(*[fetch(repo, kwargs, a) for a in self.authors for repo in self.repositories])
+            return await asyncio.gather(
+                *[fetch(repo, kwargs, a) for a in self.authors for repo in self.repositories]
+            )

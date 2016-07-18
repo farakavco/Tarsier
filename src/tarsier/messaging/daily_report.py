@@ -3,7 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 from tarsier.messaging.messenger import Messenger
-from tarsier.config import settings
+from tarsier.configuration import settings
 
 
 class DailyReport(Messenger):
@@ -11,16 +11,17 @@ class DailyReport(Messenger):
     The class for sending email via smtp server.
     """
 
-    def smtp_send(self, to, subject, body, from_=settings.USERNAME, cc=None, bcc=None, template_string=None, template_filename=None):
+    def smtp_send(self, to, subject, body, from_=None, cc=None, bcc=None, template_string=None, template_filename=None):
         try:
+            from_ = from_ or settings.smtp.username
             body = self.render_body(body, template_string, template_filename)
 
             smtp_server = smtplib.SMTP(
-                host=settings.HOST,
-                port=settings.PORT
+                host=settings.smtp.host,
+                port=settings.smtp.port
             )
             smtp_server.starttls()
-            smtp_server.login(settings.USERNAME, settings.PASSWORD)
+            smtp_server.login(settings.smtp.username, settings.smtp.password)
 
             msg = MIMEText(body, 'html')
             msg['Subject'] = subject

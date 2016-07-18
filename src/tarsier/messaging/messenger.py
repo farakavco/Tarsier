@@ -1,7 +1,7 @@
 
 from mako.lookup import TemplateLookup, Template
-from os.path import join, abspath, dirname
 from wheezy.core.descriptors import attribute
+from tarsier.configuration import settings
 
 
 class Messenger(object):
@@ -24,5 +24,8 @@ class Messenger(object):
 
     @attribute
     def lookup(self):
-        thisdir = abspath(dirname(__file__))
-        return TemplateLookup(directories=[join(thisdir, 'templates')], input_encoding='utf8')
+        return TemplateLookup(
+            directories=settings.mako.directories,
+            module_directory=settings.mako.module_directory,
+            input_encoding='utf8'
+        )

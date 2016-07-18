@@ -14,9 +14,12 @@ with open(join(dirname(__file__), 'tarsier', '__init__.py')) as v_file:
 dependencies = [
     'Mako',
     'aiohttp',
-    'aiohttp-mako',
+    'aiohttp_mako',
     'wheezy.web',
-    'khayyam'
+    'khayyam',
+    'pymlconf',
+    'appdirs',
+    'lutino'
 ]
 
 

@@ -6,7 +6,7 @@ class Commit(BaseModel):
     """Class of commit"""
 
     def __hash__(self):
-        return 0
+        return hash(self.sha)
 
     def __eq__(self, other):
-        return self.sha == other.sha
+        return self.__hash__() == other.__hash__()

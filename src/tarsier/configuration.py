@@ -48,8 +48,8 @@ format:
 github:
   base_url: http://api.github.com
   token: 'GITHUB_TOKEN_GOES_HERE'
-  repositories: [farakavco/Tarsier, farakavco/kakapo, farakavco/blueprint, farakavco/lutino, farakavco/tutorials]
-  authors: ((aida-mirabadi, aida.mirabadi@gmail.com), )
+  repositories: [farakavco/Tarsier, farakavco/lutino]
+  authors: [[aida-mirabadi, aida.mirabadi@gmail.com], [Sharez, shahabrezaee@gmail.com]]
 
 """
 

@@ -17,12 +17,16 @@ async def main():
         'until': (datetime.today() + timedelta(days=1)).strftime(settings.format.end_date)
     }
 
-    # Get all Github commits.
-    commits = await GithubDataService(
+    gitgub_service = GithubDataService(
         settings.github.repositories,
         settings.github.authors
-    ).get_commits(**kwargs)
+    )
 
+    # Get all Github commits and authors by detail based on query params.
+    commits = await gitgub_service.get_commits(**kwargs)
+    authors = await gitgub_service.get_authors_fully(**kwargs)
+
+    # Prepare result for sending report email.
     author_index = 0
     repo_count = 0
     reports = []
@@ -30,13 +34,13 @@ async def main():
         repo_count += 1
         reports = list(reports) + list(repo_commit)
 
-        if author_index < len(settings.gitgub.authors) and repo_count == len(settings.gitgub.authors):
+        if author_index < len(authors) and repo_count == len(authors):
             daily_report = DailyReport()
             daily_report.smtp_send(
-                settings.gitgub.authors[author_index].email,
+                authors[author_index].email,
                 '%s - %s' % (settings.email.subject, JalaliDate.today().strftime(settings.format.persian_date)),
                 {
-                    'author': settings.gitgub.authors[author_index],
+                    'author': authors[author_index],
                     'commits': reports,
                     'commits_flag': True if reports else False,
                     'subject': settings.email.subject,
@@ -44,7 +48,6 @@ async def main():
                 },
                 template_filename='daily_report.mak'
             )
-
             author_index += 1
             repo_count = 0
             reports = []

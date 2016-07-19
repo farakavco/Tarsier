@@ -11,6 +11,11 @@ __author__ = 'aida'
 with open(join(dirname(__file__), 'tarsier', '__init__.py')) as v_file:
     package_version = re.compile(r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
+test_dependencies = [
+    'webtest',
+    'nose'
+]
+
 dependencies = [
     'Mako',
     'aiohttp',
@@ -20,24 +25,21 @@ dependencies = [
     'pymlconf',
     'appdirs',
     'lutino'
+] + test_dependencies
+
+dependency_links = [
+
 ]
-
-
-test_dependencies = [
-    'webtest',
-    'nose'
-]
-
 
 setup(
-    name="tarsier",
+    name='tarsier',
     version=package_version,
-    author="Aida Mirabadi",
-    author_email="aida.mirabadi@gmail.com",
+    author='Aida Mirabadi',
+    author_email='aida.mirabadi@gmail.com',
     long_description=open(join('..', 'README.md'), encoding='UTF-8').read(),
     install_requires=dependencies + test_dependencies,
     packages=find_packages(),
-    dependency_links='',
+    dependency_links=dependency_links,
     message_extractors={'tarsier': [
         ('**.py', 'python', None),
         ('**.mak', 'python', None),

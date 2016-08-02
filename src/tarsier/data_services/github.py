@@ -29,6 +29,7 @@ class GithubDataService(BaseDataService):
                             headers={'Authorization': 'token %s' % settings.github.token}
                     ) as branch_resp:
                         result = set()
+
                         for branch in await branch_resp.json():
                             commit_url = '%s/repos/%s/commits' % (settings.github.base_url, repo)
 

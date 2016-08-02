@@ -26,31 +26,27 @@ async def main():
     commits = await gitgub_service.get_commits(**kwargs)
     authors = await gitgub_service.get_authors_fully(**kwargs)
 
+    report = []
     # Prepare result for sending report email.
-    author_index = 0
-    repo_count = 0
-    reports = []
-    for repo_commit in commits:
-        repo_count += 1
-        reports = list(reports) + list(repo_commit)
+    for index, repo_commits in enumerate(commits):
+        author_index = index // len(settings.github.repositories)
+        report += list(repo_commits)
 
-        if author_index < len(authors) and repo_count == len(authors):
+        if not (index + 1) % len(settings.github.repositories):
             daily_report = DailyReport()
             daily_report.smtp_send(
                 authors[author_index].email,
                 '%s - %s' % (settings.email.subject, JalaliDate.today().strftime(settings.format.persian_date)),
                 {
                     'author': authors[author_index],
-                    'commits': reports,
-                    'commits_flag': True if reports else False,
+                    'commits': report,
+                    'commits_flag': True if report else False,
                     'subject': settings.email.subject,
                     'date': JalaliDate.today().strftime(settings.format.persian_date),
                 },
                 template_filename='daily_report.mak'
             )
-            author_index += 1
-            repo_count = 0
-            reports = []
+            report = []
 
 
 if __name__ == '__main__':
